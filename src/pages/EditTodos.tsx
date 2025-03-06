@@ -1,32 +1,32 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import ProductForm, { ProductFormInput } from "../components/ProductForm";
+import TodosForm, { TodosFormInput } from "../components/TodosForm";
 import axios from "../utils/AxiosInstance";
-import { fetchProductDetail } from "./ProductDetail";   
+import { fetchTodosDetail } from "./TodosDetail";
 
-const editProduct = async (data: ProductFormInput, id: string | undefined) => {
-  return await axios.put(`/products/${id}`, data);
+const editTodos = async (data: TodosFormInput, id: string | undefined) => {
+  return await axios.put(`/todos/${id}`, data);
 };
 
-const EditProduct = () => {
+const EditTodos = () => {
   const { id } = useParams();
-  const editProductMutation = useMutation({
-    mutationFn: (data: ProductFormInput) => editProduct(data, id)
-  });
-  const getProductDetail = useQuery({
-    queryKey: ["productDetail", id],
-    queryFn: () => fetchProductDetail(id)
+   const editTodosMutation = useMutation({
+      mutationFn: (data: TodosFormInput) => editTodos(data, id)
+    });
+  const getTodosDetail = useQuery({
+    queryKey: ["todosDetail", id],
+    queryFn: () => fetchTodosDetail(id),
   });
   const navigate = useNavigate();
   useEffect(() => {
-    if (editProductMutation.isSuccess) {
-      navigate("/product", { replace: true });
+    if (editTodosMutation.isSuccess) {
+      navigate("/todos", { replace: true });
     }
-  }, [editProductMutation.isSuccess]);
+  }, [editTodosMutation.isSuccess]);
   return (
     <div className="relative">
-      {(editProductMutation.isPending || getProductDetail.isFetching) && (
+      {(editTodosMutation.isPending || getTodosDetail.isFetching) && (
         <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center">
           <div className="flex items-center bg-white/90 px-6 py-3 rounded-lg shadow-lg">
             <span className="text-2xl mr-4 text-gray-800">Loading...</span>
@@ -53,14 +53,14 @@ const EditProduct = () => {
           </div>
         </div>
       )}
-      <h2 className="text-2xl font-bold mb-6 mt-10">Edit Product</h2>
-      <ProductForm
+     
+      <TodosForm
         isEdit={true}
-        mutateFn={editProductMutation.mutate}
-        defaultInputData={getProductDetail.data?.data}
+        mutateFn={editTodosMutation.mutate}
+        defaultInputData={getTodosDetail.data?.data as TodosFormInput}   
       />
     </div>
   );
 };
 
-export default EditProduct;
+export default EditTodos;

@@ -1,32 +1,32 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import ProductForm, { ProductFormInput } from "../components/ProductForm";
+import CommentForm, { CommentFormInput } from "../components/CommentForm";
 import axios from "../utils/AxiosInstance";
-import { fetchProductDetail } from "./ProductDetail";   
+import {fetchCommentDetail} from "./CommentDetail";
 
-const editProduct = async (data: ProductFormInput, id: string | undefined) => {
-  return await axios.put(`/products/${id}`, data);
+const editComment = async (data: CommentFormInput, id: string | undefined) => {
+  return await axios.put(`/comment/${id}`, data);
 };
 
-const EditProduct = () => {
+const EditComment = () => {
   const { id } = useParams();
-  const editProductMutation = useMutation({
-    mutationFn: (data: ProductFormInput) => editProduct(data, id)
+  const editCommentMutation = useMutation({
+    mutationFn: (data: CommentFormInput) => editComment(data, id)
   });
-  const getProductDetail = useQuery({
-    queryKey: ["productDetail", id],
-    queryFn: () => fetchProductDetail(id)
+  const getCommentDetail = useQuery({
+    queryKey: ["commentDetail", id],
+    queryFn: () => fetchCommentDetail(id)
   });
   const navigate = useNavigate();
   useEffect(() => {
-    if (editProductMutation.isSuccess) {
-      navigate("/product", { replace: true });
+    if (editCommentMutation.isSuccess) {
+      navigate("/comment", { replace: true });
     }
-  }, [editProductMutation.isSuccess]);
+  }, [editCommentMutation.isSuccess]);
   return (
     <div className="relative">
-      {(editProductMutation.isPending || getProductDetail.isFetching) && (
+      {(editCommentMutation.isPending || getCommentDetail.isFetching) && (
         <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center">
           <div className="flex items-center bg-white/90 px-6 py-3 rounded-lg shadow-lg">
             <span className="text-2xl mr-4 text-gray-800">Loading...</span>
@@ -53,14 +53,19 @@ const EditProduct = () => {
           </div>
         </div>
       )}
-      <h2 className="text-2xl font-bold mb-6 mt-10">Edit Product</h2>
-      <ProductForm
+
+      <CommentForm
         isEdit={true}
-        mutateFn={editProductMutation.mutate}
-        defaultInputData={getProductDetail.data?.data}
+        mutateFn={editCommentMutation.mutate}
+        defaultInputData={{
+          body: getCommentDetail.data?.data.body || '', // Provide default value
+          userId: getCommentDetail.data?.data.userId || 0, // Provide default value
+        }}   
+
+
       />
     </div>
   );
 };
 
-export default EditProduct;
+export default EditComment;

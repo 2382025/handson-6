@@ -2,28 +2,27 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "../utils/AxiosInstance";
 import { useNavigate } from "react-router-dom";
 
-interface Post {
+interface Comment {
   id: number;
-  title: string;
   body: string;
-  userId: number;
-  tags: string[];
-  reactions: {
-    likes: number;
-    dislikes: number;
+  postId: number;
+  likes: number;
+  user: {
+    id: number;
+    username: string;
+    fullName: string;
   };
-  views: number;
 }
 
-interface PostData {
-  posts: Post[];
+interface CommentData {
+  comments: Comment[];
 }
 
-const fetchPostList = async () => {
-  return await axios.get<PostData>("/post");
+const fetchCommentList = async () => {
+  return await axios.get<CommentData>("/comment");
 };
 
-const PostSkeleton = () => {
+const CommentSkeleton = () => {
   return (
     <div className="group relative">
       <div className="aspect-square w-full rounded-md bg-gray-200 animate-pulse lg:aspect-auto lg:h-80"></div>
@@ -37,10 +36,10 @@ const PostSkeleton = () => {
   );
 };
 
-const Post = () => {
-  const getPostList = useQuery({
-    queryKey: ["postList"],
-    queryFn: fetchPostList,
+const Comment = () => {
+  const getCommentList = useQuery({
+    queryKey: ["commentList"],
+    queryFn: fetchCommentList,
   });
   const navigate = useNavigate();
   return (
@@ -53,49 +52,29 @@ const Post = () => {
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            List of Posts
+            List of Comments
           </h2>
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {getPostList.isFetching
+            {getCommentList.isFetching
               ? Array.from({ length: 4 }).map((_, index) => (
-                  <PostSkeleton key={index} />
+                  <CommentSkeleton key={index} />
                 ))
-              : getPostList.data?.data.posts.map((post) => (
-                  <div
-                key={post.id}
+              : getCommentList.data?.data.comments.map((comments) => (
+              <div
+                key={comments.id}
                 className="group relative cursor-pointer border rounded-lg p-4 hover:shadow-lg transition-shadow"
-                onClick={() => navigate(`/post/${post.id}`)}
+                onClick={() => navigate(`/comment/${comments.id}`)} 
               >
-                <div className="mt-4">
-                  <h3 className="text-lg font-medium text-gray-900">{post.title}</h3>
-                  <p className="mt-2 text-sm text-gray-500">
-                    {post.body.substring(0, 100)}...
-                  </p>
-                  <div className="mt-3">
-                    <span className="text-sm text-gray-600 mr-3">
-                      👍 {post.reactions.likes}
-                    </span>
-                    <span className="text-sm text-gray-600 mr-3">
-                      👎 {post.reactions.dislikes}
-                    </span>
-                    <span className="text-sm text-gray-600">
-                      👁️ {post.views}
-                    </span>
-                  </div>
-                  <p className="mt-2 text-sm text-gray-500">
-                    Tags: {post.tags.join(", ")}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    User ID: {post.userId}
-                  </p>
-                </div>
+                <h2 className="text-lg font-bold text-gray-900">{comments.body}</h2>
+                <p className="text-sm text-gray-600 mt-1">{comments.user.fullName}</p>
+                <p className="text-sm text-gray-600 mt-1">❤: {comments.likes}</p>
               </div>
-            ))}
+            ))} 
           </div>
         </div>
       </div>
     </div>
   );
-};
+}
 
-export default Post;
+export default Comment;
