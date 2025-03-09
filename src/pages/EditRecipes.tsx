@@ -21,7 +21,7 @@ const EditRecipes = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (editRecipeMutation.isSuccess) {
-      navigate("/recipe", { replace: true });
+      navigate("/recipes", { replace: true });
     }
   }, [editRecipeMutation.isSuccess]);
   return (
