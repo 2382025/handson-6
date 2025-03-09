@@ -8,8 +8,8 @@ interface RecipesDetail {
   name: string;
   ingredients: string;
   instructions: string;
-  prepTimeMinutes: string;
-  cookTimeMinutes: string;
+  prepTimeMinutes: number;
+  cookTimeMinutes: number;
   servings: number; 
   difficulty: string;
   cuisine: string;
@@ -99,7 +99,8 @@ const RecipesDetail = () => {
 
   useEffect(() => {
     if (deleteRecipeMutation.isSuccess) {
-      navigate("/recipe", { replace: true });
+      // Perbaikan 1: Mengubah "/recipe" menjadi "/recipes"
+      navigate("/recipes", { replace: true });
     }
   }, [deleteRecipeMutation.isSuccess]);
   return (
@@ -155,62 +156,65 @@ const RecipesDetail = () => {
               {/* Ingredients */}
               <p className="text-gray-600">
                 <span className="font-bold">Ingredients:</span>{" "}
-                <p className="text-gray-600">{recipe.ingredients}</p>
+                <span className="text-gray-600">{recipe.ingredients}</span>
+
               </p>
 
               {/* Instructions */}
               <p className="text-gray-600">
                 <span className="font-bold">Instruction:</span>{" "}
-                <p className="text-gray-600">{recipe.instructions}</p>
+                <span className="text-gray-600">{recipe.instructions}</span>
+
               </p>
 
               {/* PrepTimeMinutes */}
-              <p className="text-gray-600">
-                <span className="font-bold">Prep Time Minutes:</span>{" "}
-                {recipe.prepTimeMinutes}
-              </p>
+<div className="text-gray-600">
+  <span className="font-bold">Prep Time Minutes:</span>{" "}
+  {recipe.prepTimeMinutes}
+</div>
 
-              {/* CookTimeMinutes */}
-              <p className="text-gray-600">
-                <span className="font-bold">Cook Time Minutes:</span>{" "}
-                {recipe.cookTimeMinutes}
-              </p>
+{/* CookTimeMinutes */}
+<div className="text-gray-600">
+  <span className="font-bold">Cook Time Minutes:</span>{" "}
+  {recipe.cookTimeMinutes}
+</div>
 
-              {/* Serving */}
-              <p className="text-gray-600">
-                <span className="font-bold">Serving:</span>{" "}
-                {recipe.servings} {/* Corrected from serving to servings */}
-              </p>
+{/* Serving */}
+<div className="text-gray-600">
+  <span className="font-bold">Serving:</span>{" "}
+  {recipe.servings}
+</div>
 
-              {/* Difficulty */}
-              <p className="text-gray-600">
-                <span className="font-bold">Difficulty:</span>{" "}
-                {recipe.difficulty}
-              </p>
+{/* Difficulty */}
+<div className="text-gray-600">
+  <span className="font-bold">Difficulty:</span>{" "}
+  {recipe.difficulty}
+</div>
 
-              {/* Cuisine */}
-              <p className="text-gray-600">
-                <span className="font-bold">Cuisine:</span>{" "}
-                {recipe.cuisine}
-              </p>
+{/* Cuisine */}
+<div className="text-gray-600">
+  <span className="font-bold">Cuisine:</span>{" "}
+  {recipe.cuisine}
+</div>
 
-              {/* Calories per serving */}
-              <p className="text-gray-600">
-                <span className="font-bold">Calories per serving:</span>{" "}
-                {recipe.caloriesPerServing}
-              </p>
+{/* Calories per serving */}
+<div className="text-gray-600">
+  <span className="font-bold">Calories per serving:</span>{" "}
+  {recipe.caloriesPerServing}
+</div>
 
-               {/* Rating per serving */}
-               <p className="text-gray-600">
-                <span className="font-bold">Rating: </span>{" "}
-                {recipe.rating} ({recipe.reviewCount} reviews)
-              </p>
+{/* Rating */}
+<div className="text-gray-600">
+  <span className="font-bold">Rating:</span>{" "}
+  {recipe.rating} ({recipe.reviewCount} reviews)
+</div>
 
-                 {/* Tags */}
-                 <p className="text-gray-600">
-                <span className="font-bold">Tags:</span>{" "}
-                {recipe.tags.join(", ")} 
-              </p>
+{/* Tags */}
+<div className="text-gray-600">
+  <span className="font-bold">Tags:</span>{" "}
+  {recipe.tags.join(", ")}
+</div>
+
 
 
 
@@ -263,4 +267,3 @@ const RecipesDetail = () => {
 };
 
 export default RecipesDetail;
-
